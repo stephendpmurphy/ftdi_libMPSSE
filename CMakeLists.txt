@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 3.16)
 project(FTDI_MPSSE_Lib)
 
 # Set our include directories
-include_directories(src inc)
+include_directories(src inc/linux)
 
 # Set our source files
 set(LIB_SRC ${CMAKE_CURRENT_SOURCE_DIR}/src/ftdi_common.c

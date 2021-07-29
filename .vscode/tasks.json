@@ -1,0 +1,15 @@
+{
+    "version" : "2.0.0",
+    "tasks": [
+        {
+            "label": "Build lib 📁",
+            "type": "shell",
+            "command": "cd ${cwd} && mkdir -p build && cd build && cmake .. && make -j12"
+        },
+        {
+            "label": "Build SPI sample",
+            "type": "shell",
+            "command": "cd ${cwd}/example/SPI && mkdir -p build && cd build && cmake .. && make -j12"
+        }
+    ]
+}
