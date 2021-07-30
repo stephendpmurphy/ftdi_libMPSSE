@@ -42,11 +42,21 @@
 #include<windows.h>
 #endif
 
+#include <fcntl.h>
+#include <stdio.h>
+#include <sys/stat.h>
+#include <sys/syscall.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <stdlib.h>
+
 /* Include D2XX header*/
 #include "ftd2xx.h"
 
 /* Include libMPSSE header */
 #include "libMPSSE_spi.h"
+
+#define delete_module(name, flags) syscall(__NR_delete_module, name, flags)
 
 /******************************************************************************/
 /*								Macro and type defines							   */
@@ -80,6 +90,41 @@ static uint8 buffer[SPI_DEVICE_BUFFER_SIZE] = {0};
 /******************************************************************************/
 /*						Public function definitions						  		   */
 /******************************************************************************/
+int checkIfFtdiModuleLoaded(void) {
+	FILE *fp;
+	char modRes[128] = {0x00};
+
+	// Run the lsmod command and check if the FTDI module is loaded
+	fp = popen("lsmod | grep ftdi_sio", "r");
+
+	// Make sure the file pointer isn't null
+	if( fp == NULL ) {
+		printf("fp is null\n");
+		return -1;
+	}
+
+	// Read out any resulst from running the lsmod command
+	fgets(modRes, sizeof(modRes), fp);
+
+	// Check if the result has any characters
+	if( strlen(modRes) == 0) {
+		// No characters, assume the module isn't loaded then.
+		return 0;
+	}
+	else {
+		// Some characters were found. The module must be loaded.
+		return 1;
+	}
+}
+
+int removeFtdiModule(void) {
+	if (delete_module("ftdi_sio", O_NONBLOCK) != 0) {
+        perror("delete_module");
+        return EXIT_FAILURE;
+    }
+    return EXIT_SUCCESS;
+}
+
 /*!
  * \brief Main function / Entry point to the sample application
  *
@@ -107,6 +152,11 @@ int main()
 	channelConf.LatencyTimer = latency;
 	channelConf.configOptions = SPI_CONFIG_OPTION_MODE0 | SPI_CONFIG_OPTION_CS_DBUS3;// | SPI_CONFIG_OPTION_CS_ACTIVELOW;
 	channelConf.Pin = 0x00000000;/*FinalVal-FinalDir-InitVal-InitDir (for dir 0=in, 1=out)*/
+
+	// Check if the FTDI serial module is loaded. If so, remove it. (This currently requires sudo)
+	if( checkIfFtdiModuleLoaded() > 0 ) {
+		removeFtdiModule();
+	}
 
 	/* init library */
 #ifdef _MSC_VER
