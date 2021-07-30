@@ -4,12 +4,32 @@
         {
             "label": "Build lib 📁",
             "type": "shell",
-            "command": "cd ${cwd} && mkdir -p build && cd build && cmake .. && make -j12"
+            "command": "cd ${cwd} && mkdir -p build && cd build && cmake .. && make -j12",
+            "group" : {
+                "kind": "build",
+                "isDefault": false,
+                "problemMatcher": "$gcc"
+            }
         },
         {
-            "label": "Build SPI sample",
+            "label": "Build SPI sample - RELEASE 🔥",
             "type": "shell",
-            "command": "cd ${cwd}/example/SPI && mkdir -p build && cd build && cmake .. && make -j12"
+            "command": "cd ${cwd}/example/SPI && mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=Release .. && make -j12",
+            "group" : {
+                "kind": "build",
+                "isDefault": false,
+                "problemMatcher": "$gcc"
+            }
+        },
+        {
+            "label": "Build SPI sample - DEBUG 🐞",
+            "type": "shell",
+            "command": "cd ${cwd}/example/SPI && mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=Debug .. && make -j12",
+            "group" : {
+                "kind": "build",
+                "isDefault": true,
+                "problemMatcher": "$gcc"
+            }
         }
     ]
 }

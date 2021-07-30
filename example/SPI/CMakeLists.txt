@@ -15,6 +15,9 @@ set(SAMPLE_SRC ${CMAKE_CURRENT_SOURCE_DIR}/sample_spi.c
 # Set the lib output folderj
 set(EXECUTABLE_OUTPUT_PATH ../output)
 
+# Set debug compile options
+set(CMAKE_CXX_FLAGS_DEBUG_INIT "-ggdb")
+
 # Create our static library
 add_executable(sample_spi ${SAMPLE_SRC})
 
