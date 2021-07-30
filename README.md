@@ -25,7 +25,11 @@ Once you have compiled the static library, you can generate a sample application
 ```bash
 $ cd example/SPI
 $ mkdir -p build
-$ cmake ..
+# Debug build
+$ cmake -DCMAKE_BUILD_TYPE=Debug ..
+# OR
+# Release build
+$ cmake -DCMAKE_BUILD_TYPE=Release ..
 $ make -j8
 ```
 
